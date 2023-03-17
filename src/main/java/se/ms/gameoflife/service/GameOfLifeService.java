@@ -6,7 +6,7 @@ public class GameOfLifeService {
     private int boardHeight;
     private int boardWidth;
 
-    public GameOfLifeService(int boardHeight, int boardWidth) {
+    public void startGame(int boardHeight, int boardWidth) {
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
 

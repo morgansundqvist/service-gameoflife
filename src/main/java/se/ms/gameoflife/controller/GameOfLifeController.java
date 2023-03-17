@@ -1,5 +1,6 @@
 package se.ms.gameoflife.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,12 @@ import se.ms.gameoflife.types.ApiResponse;
 @RequestMapping("/game")
 public class GameOfLifeController {
 
+    @Autowired
     private GameOfLifeService gameService;
 
     @PostMapping("/new-game")
     public ResponseEntity<ApiResponse<String>> newGame(@RequestParam int rows, @RequestParam int columns) {
-        gameService = new GameOfLifeService(rows, columns);
+        gameService.startGame(rows, columns);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<String>(null, "New game started"));
     }
 

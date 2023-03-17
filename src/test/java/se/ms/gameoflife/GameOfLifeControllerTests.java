@@ -1,13 +1,15 @@
 package se.ms.gameoflife;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,8 +22,13 @@ public class GameOfLifeControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
     private GameOfLifeService gameService;
+
+    @BeforeEach
+    public void setup() {
+        gameService.startGame(10, 10);
+    }
 
     @Test
     public void testNewGame() throws Exception {
@@ -31,6 +38,20 @@ public class GameOfLifeControllerTests {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("message").value("New game started"));
+    }
+
+    @Test
+    public void testSetCellState() throws Exception {
+        
+        when(gameService.getBoard()).thenReturn(new boolean[5][5]);
+
+        mockMvc.perform(post("/game/set-cell-state")
+                .param("row", "2")
+                .param("column", "2")
+                .param("alive", "true")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").value("Cell state updated"));
     }
 
 }

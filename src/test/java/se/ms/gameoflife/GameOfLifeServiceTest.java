@@ -12,7 +12,8 @@ public class GameOfLifeServiceTest {
 
     @BeforeEach
     public void setUp() {
-        gameOfLifeService = new GameOfLifeService(10, 10);
+        gameOfLifeService = new GameOfLifeService();
+        gameOfLifeService.startGame(10, 10);
     }
 
     @Test
