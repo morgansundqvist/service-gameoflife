@@ -1,6 +1,7 @@
 package se.ms.gameoflife;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +53,23 @@ public class GameOfLifeControllerTests {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("message").value("Cell state updated"));
+    }
+
+    @Test
+    public void testGetBoard() throws Exception {
+        boolean[][] board = new boolean[][] {
+                { false, false, false },
+                { false, true, false },
+                { false, false, false }
+        };
+        when(gameService.getBoard()).thenReturn(board);
+
+        mockMvc.perform(get("/game/board")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").value("OK"))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[1][1]").value(true));
     }
 
 }
