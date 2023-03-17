@@ -72,4 +72,21 @@ public class GameOfLifeControllerTests {
                 .andExpect(jsonPath("data[1][1]").value(true));
     }
 
+    @Test
+    public void testTransitionToNextGeneration() throws Exception {
+        boolean[][] board = new boolean[][] {
+                { false, false, false },
+                { false, true, false },
+                { false, false, false }
+        };
+        when(gameService.getBoard()).thenReturn(board);
+
+        mockMvc.perform(post("/game/transition-to-next-generation")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").value("OK"))
+                .andExpect(jsonPath("data").isArray())
+                .andExpect(jsonPath("data[1][1]").value(true));
+    }
+
 }
