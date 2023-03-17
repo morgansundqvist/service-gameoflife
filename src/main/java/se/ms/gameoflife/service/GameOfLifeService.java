@@ -21,26 +21,47 @@ public class GameOfLifeService {
         boolean[][] nextGenerationBoard = new boolean[this.boardHeight][this.boardWidth];
         for (int rowIndex = 0; rowIndex < nextGenerationBoard.length; rowIndex++) {
             for (int columnIndex = 0; columnIndex < nextGenerationBoard[rowIndex].length; columnIndex++) {
-                boolean cellIsAlive = this.board[rowIndex][columnIndex];
+                boolean cellIsAlive = this.isCellAlive(rowIndex, columnIndex);
                 int numberOfAliveNeighborCells = 0;
-                for (int i = rowIndex - 1; i <= rowIndex + 1; i++) {
-                    for (int j = columnIndex - 1; j < columnIndex + 1; j++) {
-                        if (i >= 0 && j >= 0 && i < this.boardHeight && j < this.boardWidth && i != rowIndex
-                                && j != columnIndex) {
-                            if (this.board[i][j]) {
-                                numberOfAliveNeighborCells++;
-                            }
-                        }
-                    }
-
-                }
+                numberOfAliveNeighborCells = calculateAliveNeighborCells(rowIndex, columnIndex,
+                        numberOfAliveNeighborCells);
+                // Underpopulation rule
                 if (cellIsAlive && numberOfAliveNeighborCells < 2) {
                     nextGenerationBoard[rowIndex][columnIndex] = false;
+                    // Survival rule
+                } else if (cellIsAlive && numberOfAliveNeighborCells >= 2 && numberOfAliveNeighborCells <= 3) {
+                    nextGenerationBoard[rowIndex][columnIndex] = true;
                 }
             }
         }
 
         this.board = nextGenerationBoard;
+    }
+
+    private int calculateAliveNeighborCells(int rowIndex, int columnIndex, int numberOfAliveNeighborCells) {
+        for (int i = rowIndex - 1; i <= rowIndex + 1; i++) {
+            for (int j = columnIndex - 1; j <= columnIndex + 1; j++) {
+                if (isCellOnBoard(i, j) && isCellAlive(i, j)
+                        && isNotCurrentCell(rowIndex, columnIndex, i, j)) {
+                    numberOfAliveNeighborCells++;
+                }
+            }
+
+        }
+        return numberOfAliveNeighborCells;
+    }
+
+    private boolean isNotCurrentCell(int rowIndex, int columnIndex, int i, int j) {
+        return !(i == rowIndex
+                && j == columnIndex);
+    }
+
+    private boolean isCellOnBoard(int i, int j) {
+        return i >= 0 && j >= 0 && i < this.boardHeight && j < this.boardWidth;
+    }
+
+    private boolean isCellAlive(int rowIndex, int columnIndex) {
+        return this.board[rowIndex][columnIndex];
     }
 
     public boolean[][] getBoard() {
