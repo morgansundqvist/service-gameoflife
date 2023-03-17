@@ -34,6 +34,9 @@ public class GameOfLifeService {
                     // Over population rule
                 } else if (cellIsAlive && numberOfAliveNeighborCells > 3) {
                     nextGenerationBoard[rowIndex][columnIndex] = false;
+                    // Reproduction rule
+                } else if (!cellIsAlive && numberOfAliveNeighborCells == 3) {
+                    nextGenerationBoard[rowIndex][columnIndex] = true;
                 }
             }
         }
