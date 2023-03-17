@@ -17,6 +17,7 @@ public class GameOfLifeController {
 
     @PostMapping("/new-game")
     public ResponseEntity<ApiResponse<String>> newGame(@RequestParam int rows, @RequestParam int columns) {
+        gameService = new GameOfLifeService();
         gameService.startGame(rows, columns);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<String>(null, "New game started"));
     }
@@ -24,7 +25,7 @@ public class GameOfLifeController {
     @PostMapping("/set-cell-state")
     public ResponseEntity<ApiResponse<String>> setCellState(@RequestParam int row, @RequestParam int column,
             @RequestParam boolean alive) {
-        if (gameService == null) {
+        if (gameService == null || gameService.getBoard() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ApiResponse<String>(null, "Game not started"));
         }
@@ -34,7 +35,7 @@ public class GameOfLifeController {
 
     @GetMapping("/board")
     public ResponseEntity<ApiResponse<boolean[][]>> getBoard() {
-        if (gameService == null) {
+        if (gameService == null || gameService.getBoard() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse<boolean[][]>(null, "Game not started"));
         }
@@ -43,7 +44,7 @@ public class GameOfLifeController {
 
     @PostMapping("/transition-to-next-generation")
     public ResponseEntity<ApiResponse<boolean[][]>> transitionToNextGeneration() {
-        if (gameService == null) {
+        if (gameService == null || gameService.getBoard() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ApiResponse<boolean[][]>(null, "Game not started"));
         }

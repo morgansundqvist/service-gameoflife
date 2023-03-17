@@ -1,5 +1,8 @@
 package se.ms.gameoflife.service;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class GameOfLifeService {
 
     private boolean[][] board;
